@@ -4,20 +4,17 @@ import connection from "../connection.js"
 
 const index = (req, res) => {
 
-    const sql = "SELECT * FROM `movies`"
-    connection.query(sql, (err, results) => {
-        if (err) return res.status(500).json({
-            error: "Database query failed"
-        })
-        res.json({
+    if (err) {
+        return res.status(500).json({
+            error: "Database query failed",
+            details: err.message
+        });
+    }
 
-            length: results.length,
-            items: results
-
-        })
-
-    })
-
+    res.json({
+        count: results.length,
+        items: results
+    });
 
 }
 
@@ -27,12 +24,18 @@ const show = (req, res) => {
     const sql = "SELECT * FROM `movies` WHERE `id` = ? "
     connection.query(sql, [id], (err, results) => {
 
-        if (results[0])
-            return res.json({ items: results[0] })
+        if (err) {
+            // Restituisci un errore se la query fallisce
+            return res.status(500).json({ error: "Database error", details: err.message });
+        }
 
-        if (!results[0])
-
-            return res.status(500).json({ error: "element not found" })
+        if (results.length > 0) {
+            // Elemento trovato
+            return res.json({ items: results[0] });
+        } else {
+            // Elemento non trovato
+            return res.status(404).json({ error: "Element not found" });
+        }
 
     })
 
@@ -42,10 +45,20 @@ const destroy = (req, res) => {
 
     const id = parseInt(req.params.id)
     const sql = "DELETE FROM `movies` WHERE `id` = ? "
-    connection.query(sql, [id], () => {
+    connection.query(sql, [id], (err, results) => {
 
-        return res.json({ message: "element deleted" })
+        console.log(results)
+        if (err)
+            // Restituisci un errore se la query fallisce
+            return res.status(400).json({ error: err.message });
 
+        if (results.affectedRows > 0) {
+            // Se almeno una riga è stata eliminata
+            return res.status(200).json({ message: "Element deleted" });
+        } else {
+            // Nessuna riga trovata con quell'ID
+            return res.status(404).json({ message: "Element not found" });
+        }
 
     })
 

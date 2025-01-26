@@ -4,17 +4,24 @@ import connection from "../connection.js"
 
 const index = (req, res) => {
 
-    if (err) {
-        return res.status(500).json({
-            error: "Database query failed",
-            details: err.message
-        });
-    }
+    const sql = "SELECT * FROM `movies`"
+    connection.query(sql, (err, results) => {
 
-    res.json({
-        count: results.length,
-        items: results
-    });
+        if (err) {
+            return res.status(500).json({
+                error: "Database query failed",
+                details: err.message
+            });
+        }
+
+        res.json({
+            count: results.length,
+            items: results
+        });
+
+    })
+
+
 
 }
 

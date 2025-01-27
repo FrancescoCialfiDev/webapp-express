@@ -1,6 +1,6 @@
 import express from "express" // Importiamo express dovo averlo installato
 import cors from "cors" // Importiamo cors dopo averlo installato 
-import movieRouter from "./routers/moviesRouter.js"
+import booksRouter from "./routers/booksRouter.js"
 const server = express() // Creiamo instanza server
 const PORT = process.env.PORT || 3000 // importiamo dal file env le variabili di ambiente
 
@@ -12,7 +12,7 @@ server.use(express.json());
 
 
 {/* PRIMA ROTTA */ }
-server.use("/movies", movieRouter);
+server.use("/books", booksRouter);
 
 {/* ROTTA GENERICA IN CASO DI URL NON TROVATA */ }
 server.get("*", (req, res) => {

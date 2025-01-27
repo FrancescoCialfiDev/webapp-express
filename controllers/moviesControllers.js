@@ -28,20 +28,29 @@ const index = (req, res) => {
 const show = (req, res) => {
 
     const id = parseInt(req.params.id)
-    const sql = "SELECT * FROM `movies` WHERE `id` = ? "
+    const sql = `SELECT *  FROM movies
+    WHERE id = ?`
     connection.query(sql, [id], (err, results) => {
 
-        if (err) {
-            // Restituisci un errore se la query fallisce
-            return res.status(500).json({ error: "Database error", details: err.message });
-        }
+        if (err)
+            return res.status(500).json({ error: err })
 
-        if (results.length > 0) {
-            // Elemento trovato
-            return res.json({ items: results[0] });
+        if (results[0]) {
+            const sql2 = `SELECT reviews.* FROM reviews
+            JOIN movies ON movies.id = reviews.movie_id
+            WHERE movies.id = ?`;
+            const item = results[0]
+            connection.query(sql2, [id], (err, results2) => {
+
+                if (err)
+                    return res.status(500).json({ error: err })
+
+                item.reviews = results2
+                return res.json({ item: item })
+
+            })
         } else {
-            // Elemento non trovato
-            return res.status(404).json({ error: "Element not found" });
+            return res.status(404).json({ error: "element not found" })
         }
 
     })

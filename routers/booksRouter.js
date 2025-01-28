@@ -1,23 +1,23 @@
 import express from "express"
-const bookRouter = express.Router() // Creiamo un instanza con il metodo router di express
+const booksRouter = express.Router() // Creiamo un instanza con il metodo router di express
 import { index, show, destroy } from "../controllers/booksControllers.js"
 
 // READ - (INDEX) 
-bookRouter.get("/", index)
+booksRouter.get("/", index)
 
 // READ - (SHOW)
-bookRouter.get("/:id", show)
+booksRouter.get("/:id", show)
 
 // CREATE - (STORE)
-//bookRouter.post("/", store)
+//movieRouter.post("/", store)
 
 // UPDATE - (UPDATE)
-//bookRouter.put("/:id", update)
+//movieRouter.put("/:id", update)
 
 // PATCH - (MODIFY)
-//bookRouter.patch("/:id", modify)
+//movieRouter.patch("/:id", modify)
 
 // DELETE - (DESTROY)
-bookRouter.delete("/:id", destroy)
+booksRouter.delete("/:id", destroy)
 
-export default bookRouter
+export default booksRouter

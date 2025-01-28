@@ -34,10 +34,8 @@ const show = (req, res) => {
             return res.status(404).json({ error: "element not found" })
 
         if (results[0]) {
-            const sql2 = `SELECT reviews.*
-                          FROM reviews
-                          JOIN movies ON reviews.movie_id = movies.id
-                          WHERE movies.id = 1`;
+            const sql2 = `SELECT reviews.* FROM reviews
+            WHERE book_id = ?`;
             const item = results[0]
             connection.query(sql2, [id], (err, results2) => {
 
@@ -45,7 +43,6 @@ const show = (req, res) => {
                     return res.status(500).json({ error: err })
 
                 const reviews = results2
-                console.log(results2)
                 return res.json({ item: item, reviews: reviews })
 
             })

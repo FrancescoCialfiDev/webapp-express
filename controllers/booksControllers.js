@@ -18,14 +18,12 @@ const index = (req, res) => {
 
     })
 
-
 }
 
 const show = (req, res) => {
 
     const id = parseInt(req.params.id)
-    const sql = `SELECT books.*, AVG(reviews.vote) AS vote_avarage FROM books
-    JOIN reviews ON books.id = reviews.book_id
+    const sql = `SELECT books.* FROM books
     WHERE books.id = ?`
     connection.query(sql, [id], (err, results) => {
 
@@ -36,8 +34,10 @@ const show = (req, res) => {
             return res.status(404).json({ error: "element not found" })
 
         if (results[0]) {
-            const sql2 = `SELECT reviews.* FROM reviews
-            WHERE book_id = ?`;
+            const sql2 = `SELECT reviews.*
+                          FROM reviews
+                          JOIN movies ON reviews.movie_id = movies.id
+                          WHERE movies.id = 1`;
             const item = results[0]
             connection.query(sql2, [id], (err, results2) => {
 
@@ -45,6 +45,7 @@ const show = (req, res) => {
                     return res.status(500).json({ error: err })
 
                 const reviews = results2
+                console.log(results2)
                 return res.json({ item: item, reviews: reviews })
 
             })
